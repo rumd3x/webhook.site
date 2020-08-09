@@ -1,52 +1,52 @@
-##############################################
-# Stage 1: Install node dependencies and run gulp
-##############################################
+FROM php:7.3-apache
+LABEL maintainer="edmurcardoso@gmail.com"
 
-FROM node:11 as npm
-WORKDIR /app
+RUN apt-get update && apt-get install --assume-yes --fix-missing libssl-dev libxml2-dev libicu-dev libsqlite3-dev libsqlite3-0 libwebp-dev libjpeg62-turbo-dev libpng-dev libxpm-dev libzip-dev zlib1g-dev git unzip supervisor wget redis-server redis npm
+RUN docker-php-ext-install gd intl bcmath pdo pdo_sqlite mbstring opcache soap ctype json xml tokenizer zip
 
-COPY package.json /app
-COPY package-lock.json /app
+RUN npm install -g laravel-echo-server
+
+WORKDIR /var/www/html/
+RUN wget https://getcomposer.org/composer.phar
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+COPY . /var/www/html/
+RUN chmod 777 -R /var/www/html/storage
+RUN chmod 777 -R /var/www/html/bootstrap/cache
+RUN chmod 777 -R /var/www/html/database
+
+COPY apache.conf /etc/apache2/sites-enabled/000-default.conf
+COPY php.ini /usr/local/etc/php/php.ini
+RUN a2enmod rewrite 
+RUN a2enmod proxy_http
+RUN service apache2 restart
+
+RUN php composer.phar self-update
+RUN php composer.phar install --no-interaction --no-dev --optimize-autoloader
+
+RUN touch storage/database.sqlite
+RUN chmod 777 storage/database.sqlite
+RUN chgrp -R www-data /var/www/html
+RUN php prep_env.php
+
 RUN npm install
-
-COPY resources /app/resources
-COPY gulpfile.js /app
 RUN npm run gulp
 
-##############################################
-# Stage 2: Composer, nginx and fpm
-##############################################
+COPY jobs.conf /etc/supervisor/conf.d/jobs.conf
 
-FROM bkuhl/fpm-nginx:7.3
-WORKDIR /var/www/html
+VOLUME ["/var/www/html/storage"]
 
-# Contains laravel echo server proxy configuration
-COPY /nginx.conf /etc/nginx/conf.d
-
-USER www-data
-
-ADD --chown=www-data:www-data /composer.json /var/www/html
-ADD --chown=www-data:www-data /composer.lock /var/www/html
-
-RUN composer global require hirak/prestissimo \
-    && composer install --no-interaction --no-autoloader --no-dev --prefer-dist --no-scripts \
-    && rm -rf /home/www-data/.composer/cache
-
-ADD --chown=www-data:www-data /storage /var/www/html/storage
-ADD --chown=www-data:www-data /bootstrap /var/www/html/bootstrap
-ADD --chown=www-data:www-data /public /var/www/html/public
-ADD --chown=www-data:www-data /artisan /var/www/html
-ADD --chown=www-data:www-data /database /var/www/html/database
-ADD --chown=www-data:www-data /config /var/www/html/config
-ADD --chown=www-data:www-data /app /var/www/html/app
-
-RUN composer dump-autoload --optimize --no-dev \
-    && touch /var/www/html/database/database.sqlite \
-    && php artisan optimize \
-    && php artisan migrate
-
-ADD --chown=www-data:www-data /resources /var/www/html/resources
-COPY --chown=www-data:www-data --from=npm /app/public/css /var/www/html/public/css
-COPY --chown=www-data:www-data --from=npm /app/public/js /var/www/html/public/js
-
-USER root
+EXPOSE 80
+ENTRYPOINT redis-server & \
+laravel-echo-server start & \
+php artisan env:ensure && \
+php artisan migrate --seed --force && \
+php artisan cache:clear && \
+php artisan view:clear && \
+php artisan optimize && \
+php artisan queue:flush && \
+php artisan route:cache && \
+supervisord && \
+docker-php-entrypoint \
+&& apache2-foreground

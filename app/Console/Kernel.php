@@ -12,7 +12,9 @@ class Kernel extends ConsoleKernel
      *
      * @var array
      */
-    protected $commands = [];
+    protected $commands = [
+        Commands\EnsureEnv::class,
+    ];
 
     /**
      * Define the application's command schedule.
