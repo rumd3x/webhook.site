@@ -1,34 +1,22 @@
-# [Webhook.site](https://webhook.site)
+# [Webhook.standalone](https://webhook.site)
 
-[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/fredsted/webhook.site.svg)](https://hub.docker.com/r/fredsted/webhook.site)
-[![GitHub last commit](https://img.shields.io/github/last-commit/fredsted/webhook.site.svg)](https://github.com/fredsted/webhook.site/commits/master)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/edmur/webhook.standalone.svg)](https://hub.docker.com/r/edmur/webhook.standalone)
+[![GitHub last commit](https://img.shields.io/github/last-commit/rumd3x/webhook.standalone.svg)](https://github.com/rumd3x/webhook.standalone/commits/master)
 
-With [Webhook.site](https://webhook.site), you instantly get a unique, random URL that you can use to test and debug Webhooks and HTTP requests, as well as to create your own workflows using the Custom Actions graphical editor or WebhookScript, a simple scripting language, to transform, validate and process HTTP requests.
+This is a dockerized standalone version of `fredsted/webhook.site`. 
 
-## What are people using it for?
+## Usage
 
-* Receive Webhooks without needing an internet-facing Web server
-* Send Webhooks to a server that’s behind a firewall or private subnet
-* Transforming Webhooks into other formats, and re-sending them to different systems
-* Connect different APIs that aren’t compatible
-* Building contact forms that send emails
-* Instantly build APIs without needing infrastructure
-Built by Simon Fredsted (@fredsted).
+First create a volume for persistent data (optional)
 
-## Open Source
+```
+docker volume create webhooks-data
+```
 
-There are two versions of Webhook.site:
+Start the container
 
-* The completely open-source, MIT-licensed version is available on Github, which can be self-hosted using e.g. Docker, is great for testing Webhooks, but doesn’t include features like Custom Actions.
-
-* The cloud version at [https://webhook.site](https://webhook.site) which has more features, some of them requiring a paid subscription.
-
-## Acknowledgements
-
-* The app was built with [Laravel](https://laravel.com) for the API and Angular.js for the frontend SPA.
-* WebhookScript based on [Primi](https://github.com/smuuf/Primi) Copyright (c) Přemysl Karbula.
-* The WebhookScript editor is using the [Ace](https://ace.c9.io/).
-* JSONPath extraction provided by [FlowCommunications](https://github.com/FlowCommunications/JSONPath).
-* This documentation site uses [Just the Docs](https://github.com/pmarsceill/just-the-docs), a documentation theme for Jekyll.
-
-**[Full Documentation at docs.webhook.site](https://docs.webhook.site)**
+```
+docker run -d --name webhooks --restart always \
+-p 80:80 -v webhooks-data:/var/www/html/storage \
+edmur/webhooks.standalone
+```

@@ -33,22 +33,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/" ui-sref="home()">&#x2693;&#xFE0F; Webhook Tester</a>
+                <a class="navbar-brand" href="/" ui-sref="home()">&#x2693;&#xFE0F; Webhook.edmurcardoso.com.br</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <div class="nav navbar-left navbar-form">
-                    <a href="https://github.com/fredsted/webhook.site" target="_blank"
+                    <a href="https://github.com/rumd3x/webhook.standalone" target="_blank"
                        style="margin-top: 7px"
                        class="btn btn-xs btn-link">
-                        Github Page</a>
-                    <a href="https://github.com/fredsted/webhook.site#donate" target="_blank"
-                       style="margin-top: 7px"
-                       class="btn btn-xs btn-link">
-                        Donate</a>
-                    <a href="https://twitter.com/fredsted" target="_blank"
-                       style="margin-top: 7px"
-                       class="btn btn-xs btn-link">
-                        @fredsted</a>
+                        Github</a>
                 </div>
                 <div class="nav navbar-right navbar-form hidden-sm">&nbsp;
                     <button type="button" class="btn btn-link openModal" data-modal="#editUrlModal"
@@ -132,6 +124,16 @@
                         <a href="https://simonfredsted.com/1583" target="_blank">What is a webhook?</a></p>
                     <p>Any requests sent to that URL are logged here instantly
                         &mdash; you don't even have to refresh!</p>
+                        <hr>
+                    <p>Bookmark this page to go back to the requests at any time.</p>
+                    <p></p>Click <b>New URL</b> to create a new url with the ability to
+                        customize status code, response body, etc.</p>
+                    <p>
+                        <a class="github-button" href="https://github.com/rumd3x/webhook.standalone"
+                           data-icon="octicon-star" data-show-count="true"
+                           aria-label="Star rumd3x/webhook.standalone on GitHub">Star on GitHub</a>
+                        <a href="https://github.com/rumd3x/webhook.standalone">
+                    </p>
                     <hr>
                     <p>Here's your unique URL that was created just now:</p>
                     <p>
@@ -143,17 +145,7 @@
                            href="{{ protocol }}//{{ domain }}/{{ token.uuid }}"
                            target="_blank">
                             <span class="glyphicon glyphicon-new-window"></span> Open in new tab</a>
-                    </p>
-                    <hr>
-                    <p>Bookmark this page to go back to the requests at any time.</p>
-                    <p></p>Click <b>New URL</b> to create a new url with the ability to
-                        customize status code, response body, etc.</p>
-                    <p>
-                        <a class="github-button" href="https://github.com/fredsted/webhook.site"
-                           data-icon="octicon-star" data-show-count="true"
-                           aria-label="Star fredsted/webhook.site on GitHub">Star on GitHub</a>
-                        <a href="https://github.com/fredsted/webhook.site"
-                    </p>
+                    </p>                    
                 </div>
                 <div ng-show="hasRequests">
                     <div class="container-fluid">
