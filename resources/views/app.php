@@ -33,11 +33,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/" ui-sref="home()">&#x2693;&#xFE0F; Webhook.edmurcardoso.com.br</a>
+                <a class="navbar-brand" href="/" ui-sref="home()">&#x2693;&#xFE0F; {{ domain }}</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <div class="nav navbar-left navbar-form">
-                    <a href="https://github.com/rumd3x/webhook.standalone" target="_blank"
+                    <a href="https://github.com/rumd3x/webhooks.standalone" target="_blank"
                        style="margin-top: 7px"
                        class="btn btn-xs btn-link">
                         Github</a>
@@ -84,7 +84,7 @@
                             ng-class="{'active': currentRequestIndex === request.uuid, 'unread': unread.indexOf(request.uuid) !== -1}">
                             <a ng-click="setCurrentRequest(request)" class="select">
                                 <span class="label label-{{ getLabel(request.method) }}">{{ request.method }}</span>
-                                #{{ request.uuid.substring(0,5) }} {{ request.ip }} <br/>
+                                #{{ request.uuid.substring(0,5) }} {{ request.headers["x-forwarded-for"][0] ? request.headers["x-forwarded-for"][0] : request.ip }} <br/>
                                 <small>{{ localDate(request.created_at) }}</small>
                             </a>
                             <a ng-click="deleteRequest(request, key)" class="btn btn-danger delete">
@@ -119,7 +119,7 @@
                     <button type="button" class="close" data-dismiss="tutorial" aria-label="Close"
                             ng-click="toggleTutorial()">
                         <span aria-hidden="true">&times;</span></button>
-                    <p><strong>Webhook.site</strong>
+                    <p><strong>{{ domain }}</strong>
                         allows you to easily test webhooks and other types of HTTP requests.
                         <a href="https://simonfredsted.com/1583" target="_blank">What is a webhook?</a></p>
                     <p>Any requests sent to that URL are logged here instantly
@@ -129,10 +129,10 @@
                     <p></p>Click <b>New URL</b> to create a new url with the ability to
                         customize status code, response body, etc.</p>
                     <p>
-                        <a class="github-button" href="https://github.com/rumd3x/webhook.standalone"
+                        <a class="github-button" href="https://github.com/rumd3x/webhooks.standalone"
                            data-icon="octicon-star" data-show-count="true"
-                           aria-label="Star rumd3x/webhook.standalone on GitHub">Star on GitHub</a>
-                        <a href="https://github.com/rumd3x/webhook.standalone">
+                           aria-label="Star rumd3x/webhooks.standalone on GitHub">Star on GitHub</a>
+                        <a href="https://github.com/rumd3x/webhooks.standalone">
                     </p>
                     <hr>
                     <p>Here's your unique URL that was created just now:</p>
@@ -254,7 +254,7 @@
                                     <tr>
                                         <td>Host</td>
                                         <td id="req-ip">
-                                            {{ currentRequest.ip }}
+                                            {{ currentRequest.headers["x-forwarded-for"][0] ? currentRequest.headers["x-forwarded-for"][0] : currentRequest.ip }}
                                             <a class="small" target="_blank"
                                                href="https://who.is/whois-ip/ip-address/{{ currentRequest.ip }}">whois</a>
                                         </td>
